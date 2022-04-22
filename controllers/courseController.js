@@ -21,7 +21,7 @@ exports.show = async(req, res, next) => {
         next(err);
     }
 };
-exports.store = async(req, res, next) => {
+exports.post = async(req, res, next) => {
     try {
         // validationHandler(req);
 

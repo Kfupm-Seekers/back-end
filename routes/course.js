@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/', courseController.index);
 router.get('/:id', courseController.show);
 router.post('/',
-    courseController.store);
+    courseController.post);
 router.patch("/:id", courseController.update)
 router.delete("/:id", courseController.delete);
 module.exports = router;

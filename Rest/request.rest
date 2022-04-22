@@ -1,0 +1,9 @@
+GET http://localhost:80/api/course
+
+Content-Type: application/json
+
+###
+
+GET http://localhost:80/api/course/625dddfba1b38a6763764936
+
+Content-Type: application/json

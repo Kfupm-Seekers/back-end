@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const errorHandler = require('./middlewares/errorHandler');
 const postRoutes = require('./routes/post');
 const courseRoutes = require('./routes/course');
+const treeRoutes = require('./routes/tree');
 const app = express();
 
 
@@ -36,8 +37,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/post', postRoutes);
 app.use('/api/course', courseRoutes);
-
+app.use('/api/tree', treeRoutes);
 app.use(errorHandler);
 app.listen(80, () => {
-    console.log('Server is running on port 8000');
+    console.log('Server is running on port 80');
 });

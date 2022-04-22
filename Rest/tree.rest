@@ -1,0 +1,48 @@
+GET http://localhost:80/api/tree
+
+Content-Type: application/json
+
+### get tree by id
+GET http://localhost:80/api/tree/6262fc97055f859d25272b8f
+
+Content-Type: application/json
+
+### post tree
+
+POST http://localhost:80/api/tree
+
+Content-Type: application/json
+
+{
+    "name": "test",
+    "description": "test",
+    "courses": []
+}
+
+### add course to tree
+
+PATCH http://localhost:80/api/tree/6262fc97055f859d25272b8f
+
+Content-Type: application/json
+
+{
+ "courseId": "625dddfba1b38a6763764936"
+}
+
+### delete course from tree
+
+
+# DELETE http://localhost:80/api/tree/6262f6d3c44667b757bc87f3
+
+# Content-Type: application/json
+
+# {
+#  "courseId": "625dddfba1b38a6763764936"
+# }
+
+### delete tree
+
+DELETE http://localhost:80/api/tree/6262f6d3c44667b757bc87f3
+
+
+
