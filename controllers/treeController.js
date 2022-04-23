@@ -32,6 +32,7 @@ exports.post = async(req, res, next) => {
         let tree = new Tree();
         tree.name = req.body.name;
         tree.description = req.body.description;
+        tree.imageurl = req.body.imageurl;
         tree.courses = req.body.courses;
         tree = await tree.save();
 

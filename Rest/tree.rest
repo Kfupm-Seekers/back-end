@@ -10,19 +10,17 @@ Content-Type: application/json
 ### post tree
 
 POST http://localhost:80/api/tree
-
 Content-Type: application/json
 
 {
-    "name": "test",
-    "description": "test",
-    "courses": []
-}
+    "name": "Machine Learning A-Z™: Hands-On Python & R In Data Science udemy",
+    "description": "Machine Learning A-Z™: Hands-On Python & R In Data Science",
+    "imageurl": "https://img-b.udemycdn.com/course/240x135/950390_270f_3.jpg"
 
+}
 ### add course to tree
 
-PATCH http://localhost:80/api/tree/6262fc97055f859d25272b8f
-
+PATCH http://localhost:80/api/tree/626459e97eded5218d4fa0ef
 Content-Type: application/json
 
 {
@@ -42,7 +40,7 @@ Content-Type: application/json
 
 ### delete tree
 
-DELETE http://localhost:80/api/tree/6262f6d3c44667b757bc87f3
+DELETE http://localhost:80/api/tree/62634a47cf933e2e6f203dac
 
 
 

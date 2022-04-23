@@ -1,9 +1,22 @@
 GET http://localhost:80/api/course
-
 Content-Type: application/json
 
 ###
 
 GET http://localhost:80/api/course/625dddfba1b38a6763764936
-
 Content-Type: application/json
+
+
+### post course
+
+POST http://localhost:80/api/course 
+Content-Type: application/json
+
+{
+    "name": "Machine Learning A-Z™: Hands-On Python & R In Data Science udemy",
+    "description": "Machine Learning A-Z™: Hands-On Python & R In Data Science",
+    "imageurl": "https://img-b.udemycdn.com/course/240x135/950390_270f_3.jpg",
+    "provider": "Udemy",
+    "price": 20
+
+}
