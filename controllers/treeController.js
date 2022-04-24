@@ -7,7 +7,7 @@ exports.index = async(req, res) => {
         const trees = await Tree.find().sort({ createdat: -1 });
         res.send(trees);
     } catch (err) {
-        next(err);
+        res.status(404).json({ "message": "Error not found" });
     }
 };
 
@@ -21,7 +21,7 @@ exports.show = async(req, res, next) => {
 
 
     } catch (err) {
-        next(err);
+        res.status(404).json({ "message": "Error not found" });
     }
 };
 
@@ -39,7 +39,7 @@ exports.post = async(req, res, next) => {
         res.send(tree);
         res.send({ message: 'The name is ' + req.body.name });
     } catch (err) {
-        next(err)
+        res.status(404).json({ "message": "Error not found" });
     }
 }
 exports.update = async(req, res, next) => {
@@ -56,7 +56,7 @@ exports.update = async(req, res, next) => {
         res.send(tree);
         res.send({ message: 'The name is ' + req.body.name });
     } catch (err) {
-        next(err)
+        res.status(404).json({ "message": "Error not found" });
     }
 }
 
@@ -66,6 +66,6 @@ exports.delete = async(req, res, next) => {
         await tree.remove();
         res.send({ message: 'Tree deleted' });
     } catch (err) {
-        next(err);
+        res.status(404).json({ "message": "Error not found" });
     }
 }

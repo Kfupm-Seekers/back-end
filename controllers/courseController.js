@@ -7,7 +7,7 @@ exports.index = async(req, res) => {
         const courses = await Course.find().sort({ createdat: -1 });
         res.send(courses);
     } catch (err) {
-        next(err);
+        res.status(404).json({ "message": "Error not found" });
     }
 };
 
@@ -16,9 +16,14 @@ exports.show = async(req, res, next) => {
         const course = await Course.findOne({
             _id: req.params.id
         });
+        if (course == null) {
+            res.status(404).json({ "message": "Error not found" });
+
+        }
         res.send(course);
     } catch (err) {
-        next(err);
+        res.status(404).json({ "message": "Error not found" });
+
     }
 };
 exports.post = async(req, res, next) => {
@@ -36,7 +41,7 @@ exports.post = async(req, res, next) => {
         res.send(course);
         res.send({ message: 'The name is ' + req.body.name });
     } catch (err) {
-        next(err)
+        res.status(400).send(err);
     }
 }
 
@@ -68,7 +73,7 @@ exports.update = async(req, res, next) => {
         res.send(course);
         res.send({ message: 'The name is ' + req.body.name });
     } catch (err) {
-        next(err)
+        res.status(404).json({ "message": "Error not found" });
     }
 }
 
@@ -78,6 +83,6 @@ exports.delete = async(req, res, next) => {
         await course.delete();
         res.send({ message: 'The course was deleted' });
     } catch (err) {
-        next(err);
+        res.status(404).json({ "message": "Error not found" });
     }
 }

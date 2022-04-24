@@ -13,7 +13,7 @@ const app = express();
 // app.use(cors());
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb+srv://admin:0556231039Aa.@cluster0.aelov.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true })
+mongoose.connect('mongodb+srv://team:l9irUEeUegtujTPj@cluster0.aelov.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true })
 
 const allowedOrigins = ["http://localhost:3000", "http://localhost:8080"];
 

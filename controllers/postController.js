@@ -7,7 +7,7 @@ exports.index = async(req, res) => {
         const posts = await Post.find().sort({ createdat: -1 });
         res.send(posts);
     } catch (err) {
-        next(err);
+        res.status(404).json({ "message": "Error not found" });
     }
 };
 
@@ -18,7 +18,7 @@ exports.show = async(req, res, next) => {
         });
         res.send(post);
     } catch (err) {
-        next(err);
+        res.status(404).json({ "message": "Error not found" });
     }
 };
 exports.store = async(req, res, next) => {
@@ -34,7 +34,7 @@ exports.store = async(req, res, next) => {
         res.send(post);
         res.send({ message: 'The name is ' + req.body.name });
     } catch (err) {
-        next(err)
+        res.status(404).json({ "message": "Error not found" });
     }
 }
 
@@ -50,7 +50,7 @@ exports.update = async(req, res, next) => {
         res.send(post);
         res.send({ message: 'The name is ' + req.body.name });
     } catch (err) {
-        next(err)
+        res.status(404).json({ "message": "Error not found" });
     }
 }
 
@@ -60,6 +60,6 @@ exports.delete = async(req, res, next) => {
         await post.delete();
         res.send({ message: 'The post was deleted' });
     } catch (err) {
-        next(err);
+        res.status(404).json({ "message": "Error not found" });
     }
 }
