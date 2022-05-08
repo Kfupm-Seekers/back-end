@@ -4,6 +4,7 @@ const validationHandler = require('../validations/validationHandler');
 
 exports.index = async(req, res) => {
     try {
+        console.log(req.params.user_id)
         const courses = await Course.find().sort({ createdat: -1 });
         res.send(courses);
     } catch (err) {
@@ -36,6 +37,7 @@ exports.post = async(req, res, next) => {
         course.imageurl = req.body.imageurl;
         course.provider = req.body.provider;
         course.price = req.body.price;
+        course.url = req.body.url;
         course = await course.save();
 
         res.send(course);

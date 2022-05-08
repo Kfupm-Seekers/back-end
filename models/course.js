@@ -7,7 +7,9 @@ const CourseSchema = new Schema({
     provider: { type: String, required: true },
     price: { type: Number, required: true },
     imageurl: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now() }
+    url: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now() },
+   
 });
 
 module.exports = mongoose.model('Course', CourseSchema);

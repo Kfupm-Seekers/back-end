@@ -7,10 +7,29 @@ const errorHandler = require('./middlewares/errorHandler');
 const postRoutes = require('./routes/post');
 const courseRoutes = require('./routes/course');
 const treeRoutes = require('./routes/tree');
+const Course = require("./models/course");
+const Path = require("./models/pathModel");
+
+const userRouter = require("./routes/users");
+
+
+const FavouriteListModel = require("./models/FavouriteListModel");
+const BookmarkListModel = require("./models/BookmarkListModel");
+//path
+const FavouriteListModelPath = require("./models/FavouriteListModelPath");
+const BookmarkListModelPath = require("./models/BookmarkListModelPath");
+//path end
+
+const passport = require("passport");
+const session = require("express-session");
+const authConfig = require("./auth_config.json");
+
+const jwt = require("express-jwt");
+const jwksRsa = require("jwks-rsa");
+
+require("./utils/passport");
+
 const app = express();
-
-
-// app.use(cors());
 
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb+srv://team:l9irUEeUegtujTPj@cluster0.aelov.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true })
@@ -34,11 +53,445 @@ app.use(
 
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
+app.use(
+  session({
+    secret: "pa$$word1234",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
+//auth
+
+app.use("/users", userRouter);
+
+const { auth, requiredScopes } = require('express-oauth2-jwt-bearer');
+require('dotenv').config();
+
+if (!process.env.ISSUER_BASE_URL || !process.env.AUDIENCE) {
+  throw 'Make sure you have ISSUER_BASE_URL, and AUDIENCE in your .env file';
+}
+
+const checkJwt = jwt({
+    secret: jwksRsa.expressJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 5,
+      jwksUri: `https://${authConfig.domain}/.well-known/jwks.json`,
+    }),
+  
+    audience: authConfig.audience,
+    issuer: `https://${authConfig.domain}/`,
+    algorithms: ["RS256"],
+  });
+
+app.use(function(err, req, res, next){
+  console.error(err.stack);
+  return res.set(err.headers).status(err.status).json({ message: err.message });
+});
+
+// auth end
 
 app.use('/api/post', postRoutes);
 app.use('/api/course', courseRoutes);
 app.use('/api/tree', treeRoutes);
 app.use(errorHandler);
+
+// in db
+//module.exports= mongoose.model('Course',CourseSchema);
+
+
+
+
+
+//======================courses get======================
+app.get(
+  "/courses",
+  async (req, res) => {
+    let favourites = await FavouriteListModel.findOne({ user_id: req.user.id });
+    let bookmarks = await BookmarkListModel.findOne({ user_id: req.user.id });
+
+    console.log(favourites);
+    let foundCourses = await Course.find({});
+    console.log(foundCourses);
+
+    let courses = [...foundCourses];
+    if (favourites && bookmarks) {
+      courses = courses.map((el) => ({
+        ...el._doc,
+        isFavourite: favourites.list.includes(el._doc._id),
+        isBookmarked: bookmarks.list.includes(el._doc._id),
+      }));
+    }
+
+    console.log(courses);
+    if (foundCourses) {
+      return res.status(200).json({
+        courses,
+      });
+    }
+  }
+);
+
+
+//==================Paths get=============
+app.get(
+    "/paths",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+        let favouritesPath = await FavouriteListModelPath.findOne({ user_id: req.user.id });
+        let bookmarksPath = await BookmarkListModelPath.findOne({ user_id: req.user.id });
+
+        console.log(favouritesPath);
+        let foundPaths = await Path.find({});
+        console.log(foundPaths);
+        let paths = [...foundPaths];
+        if (favouritesPath && bookmarksPath) {
+            paths = paths.map((el) => ({
+                ...el._doc,
+                isFavouritePath: favouritesPath.list.includes(el._doc._id),
+                isBookmarkedPath: bookmarksPath.list.includes(el._doc._id),
+            }));
+        }
+
+        console.log(paths);
+        if (foundPaths) {
+            return res.status(200).json({
+                paths,
+            });
+        }
+    }
+);
+
+// ===============favourite  courses ==================
+
+app.put(
+  "/courses/favourite/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    FavouriteListModel.updateOne(
+      { user_id: req.user.id },
+      { $addToSet: { list: req.params.id } },
+      (err, results) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ message: "could not set course as favourite" });
+        }
+        return res
+          .status(200)
+          .json({ message: "course added to favourites successfully" });
+      }
+    );
+  }
+);
+
+
+app.put(
+  "/courses/favourite/remove/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    FavouriteListModel.updateOne(
+      { user_id: req.user.id },
+      { $pull: { list: req.params.id } },
+      (err, results) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ message: "could not remove course from favourite" });
+        }
+        return res
+          .status(200)
+          .json({ message: "course removed from favourites successfully" });
+      }
+    );
+  }
+);
+
+// ===============favourite  paths ==================
+app.put(
+    "/paths/favourite/:id",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+        FavouriteListModelPath.updateOne(
+            { user_id: req.user.id },
+            { $addToSet: { list: req.params.id } },
+            (err, results) => {
+                if (err) {
+                    return res
+                        .status(500)
+                        .json({ message: "could not set path as favourite" });
+                }
+                return res
+                    .status(200)
+                    .json({ message: "path added to favourites successfully" });
+            }
+        );
+    }
+);
+
+
+app.put(
+    "/paths/favourite/remove/:id",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+        FavouriteListModelPath.updateOne(
+            { user_id: req.user.id },
+            { $pull: { list: req.params.id } },
+            (err, results) => {
+                if (err) {
+                    return res
+                        .status(500)
+                        .json({ message: "could not remove path from favourite" });
+                }
+                return res
+                    .status(200)
+                    .json({ message: "path removed from favourites successfully" });
+            }
+        );
+    }
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ===============bookmark  courses==================
+app.put(
+  "/courses/bookmark/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    BookmarkListModel.updateOne(
+      { user_id: req.user.id },
+      { $addToSet: { list: req.params.id } },
+      (err, results) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ message: "could not set course as bookmark" });
+        }
+        return res
+          .status(200)
+          .json({ message: "course added to bookmark successfully" });
+      }
+    );
+  }
+);
+
+
+app.put(
+  "/courses/bookmark/remove/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    BookmarkListModel.updateOne(
+      { user_id: req.user.id },
+      { $pull: { list: req.params.id } },
+      (err, results) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ message: "could not remove course from bookmark" });
+        }
+        return res
+          .status(200)
+          .json({ message: "course removed from bookmark successfully" });
+      }
+    );
+  }
+);
+
+
+// ===============bookmark  paths==================
+app.put(
+    "/paths/bookmark/:id",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+        BookmarkListModelPath.updateOne(
+            { user_id: req.user.id },
+            { $addToSet: { list: req.params.id } },
+            (err, results) => {
+                if (err) {
+                    return res
+                        .status(500)
+                        .json({ message: "could not set path as bookmark" });
+                }
+                return res
+                    .status(200)
+                    .json({ message: "path added to bookmark successfully" });
+            }
+        );
+    }
+);
+
+
+app.put(
+    "/paths/bookmark/remove/:id",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+        BookmarkListModelPath.updateOne(
+            { user_id: req.user.id },
+            { $pull: { list: req.params.id } },
+            (err, results) => {
+                if (err) {
+                    return res
+                        .status(500)
+                        .json({ message: "could not remove path from bookmark" });
+                }
+                return res
+                    .status(200)
+                    .json({ message: "path removed from bookmark successfully" });
+            }
+        );
+    }
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//====== for pages of Fav and bookmark to get courses
+
+app.get(
+    "/courses/favourites",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+        let favourites = await FavouriteListModel.findOne({ user_id: req.user.id });
+        let bookmarks = await BookmarkListModel.findOne({ user_id: req.user.id });
+        console.log(favourites);
+        let foundCourses = await Course.find({
+            _id: { $in: favourites.list },
+        });
+        console.log(foundCourses);
+        let courses = [...foundCourses];
+        if (favourites && bookmarks) {
+            courses = courses.map((el) => ({
+                ...el._doc,
+                isFavourite: true,
+                isBookmarked: bookmarks.list.includes(el._doc._id),
+            }));
+        }
+
+        console.log(courses);
+        if (foundCourses) {
+            return res.status(200).json({
+                courses,
+            });
+        }
+    }
+);
+app.get(
+    "/courses/bookmarks",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+        let favourites = await FavouriteListModel.findOne({ user_id: req.user.id });
+        let bookmarks = await BookmarkListModel.findOne({ user_id: req.user.id });
+        console.log(favourites);
+        let foundCourses = await Course.find({
+            _id: { $in: bookmarks.list },
+        });
+        console.log(foundCourses);
+        let courses = [...foundCourses];
+        if (favourites && bookmarks) {
+            courses = courses.map((el) => ({
+                ...el._doc,
+                isBookmarked: true,
+                isFavourite: favourites.list.includes(el._doc._id),
+            }));
+        }
+
+        console.log(courses);
+        if (foundCourses) {
+            return res.status(200).json({
+                courses,
+            });
+        }
+    }
+);
+
+
+//===== paths
+//====== for pages of Fav and bookmark to get paths
+
+app.get(
+    "/paths/favourites",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+        let favouritesPath = await FavouriteListModelPath.findOne({ user_id: req.user.id });
+        let bookmarksPath = await BookmarkListModelPath.findOne({ user_id: req.user.id });
+        console.log(favouritesPath);
+        let foundPaths = await Path.find({
+            _id: { $in: favouritesPath.list },
+        });
+        console.log(foundPaths);
+        let paths = [...foundPaths];
+        if (favouritesPath && bookmarksPath) {
+            paths = paths.map((el) => ({
+                ...el._doc,
+                isFavouritePath: true,
+                isBookmarkedPath: bookmarksPath.list.includes(el._doc._id),
+            }));
+        }
+
+        console.log(paths);
+        if (foundPaths) {
+            return res.status(200).json({
+                paths,
+            });
+        }
+    }
+);
+app.get(
+    "/paths/bookmarks",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+        let favouritesPath = await FavouriteListModelPath.findOne({ user_id: req.user.id });
+        let bookmarksPath = await BookmarkListModelPath.findOne({ user_id: req.user.id });
+        console.log(favouritesPath);
+        let foundPaths = await Path.find({
+            _id: { $in: bookmarksPath.list },
+        });
+        console.log(foundPaths);
+        let paths = [...foundPaths];
+        if (favouritesPath && bookmarksPath) {
+            paths = paths.map((el) => ({
+                ...el._doc,
+                isBookmarkedPath: true,
+                isFavouritePath: favouritesPath.list.includes(el._doc._id),
+            }));
+        }
+
+        console.log(paths);
+        if (foundPaths) {
+            return res.status(200).json({
+                paths,
+            });
+        }
+    }
+);
+
+
+
 app.listen(80, () => {
     console.log('Server is running on port 80');
 });

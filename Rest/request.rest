@@ -1,5 +1,12 @@
 GET http://localhost:80/api/course
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwiaXNzIjoiaHR0cHM6Ly9zZWVrZXIuYXUuYXV0aDAuY29tLyJ9..TrSdUa85GX08iwgx.NPDIz-NaDX3RLSP9mguuGOiEFDu4bmPGxCSHsMpmTESFc_pokb4Rz4qWeOQ28Fk0FdRoZ_5vpLP7YJpzQYswmUelrtP2BOIv0fM7tOnFDGr2uC9qCuE1_4NUigSODWtMe-RII-g-C8oaCuYIWl-k1GbKg0dTBAGZKcv7RzIiTJLMpetKxmhXppI2v1L88XCXLoB_ZNzSXdkBfdbmz-Rb6fmIoTtguVoen_71BuH6bSQji0MLzPCP9LplqNcylVnZHcFpuwQ_AtcBkUHI6_oaMPX32RrIQYztqgmRSLYDHgDxDdCPdxDT0Dp_Ig.S5vA9oZZVrIXYk9xn9VkIA
+
+###
+
+GET http://localhost:80/course
+Content-Type: application/json
+
 
 ###
 
@@ -17,6 +24,8 @@ Content-Type: application/json
     "description": "Machine Learning A-Z™: Hands-On Python & R In Data Science",
     "imageurl": "https://img-b.udemycdn.com/course/240x135/950390_270f_3.jpg",
     "provider": "Udemy",
+    "url": "https://www.udemy.com/course/machinelearning/",
     "price": 20
 
 }
+

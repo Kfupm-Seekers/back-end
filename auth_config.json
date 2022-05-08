@@ -1,0 +1,5 @@
+{
+  "domain": "seeker.au.auth0.com",
+  "clientId": "zDKhjoetB2xjHDdk6YhVI3vGz3zAObcw",
+  "audience": "http://localhost:3000/api"
+}
