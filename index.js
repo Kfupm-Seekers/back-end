@@ -42,3 +42,32 @@ app.use(errorHandler);
 app.listen(80, () => {
     console.log('Server is running on port 80');
 });
+
+
+// import express from 'express';
+// import bodyParser from 'body-parser';
+// import mongoose from 'mongoose';
+// import cors from 'cors';
+// import pathRoutes from './routes/PathsDes.js';
+// import profileRoutes from './routes/Profile.js';
+
+// const app = express()
+// app.use(express.urlencoded({ extended: true }))
+// app.use(express.json())
+// app.use(cors());
+// // parse application/json
+// app.use(bodyParser.json());
+// app.use('/PathDescription', pathRoutes);
+// app.use(profileRoutes)
+
+
+// // app.listen(5000, () => console.log(`App listening at http://localhost:${5000}`))
+
+// const CONNECTION_URL = 'mongodb+srv://Musab:Musab1234@swe418cluster.rlu7n.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+// const PORT = process.env.PORT || 5000;
+// mongoose.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+//     .then(() => {
+//         console.log("connected to the MongoDB")
+//         app.listen(PORT, () => console.log(`Server running on port: http://localhost:${PORT}`))
+//     })
+//     .catch((err) => console.log(err.message));
