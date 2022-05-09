@@ -1,14 +1,16 @@
-import express from "express";
+
+
+const express = require("express");
 const router = express.Router();
 
 // in node we have to write the extension EX: .js , unlike react we can write without extension 
-import { AddUserInfo, createUserProfileTest, getProfiles, getProfile } from '../controllers/Profile.js'
+const profileController = require('../controllers/Profile.js')
 // we use this file to handle Post http request
 
-router.get('/userProfile', getProfiles);
-router.get('/userProfile/:id', getProfile)
-router.post('/uploadImg', createUserProfileTest);
-router.post('/profile', AddUserInfo);
+router.get('/userProfile', profileController.getProfiles);
+router.get('/userProfile/:id', profileController.getProfile)
+router.post('/uploadImg', profileController.createUserProfileTest);
+router.post('/profile',profileController.AddUserInfo);
 
 
-export default router;
+module.exports = router;

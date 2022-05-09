@@ -1,6 +1,6 @@
-import PathDescription from "../models/pathDescription.js";
+const PathDescription =  require("../models/pathDescription.js");
 
-export const getPathsDescription = async (req, res) => {
+exports.getPathsDescription = async (req, res) => {
     // small p in pathDescription for the function
     // capital P in the PathDescription for the file
     try {
@@ -14,12 +14,12 @@ export const getPathsDescription = async (req, res) => {
     }
 }
 
-export const createPathDescription = async (req, res) => {
+exports.createPathDescription = async (req, res) => {
     const pathDescriptionDocument = req.body; //req.body is the content of the form
     const newPathDescription = new PathDescription(pathDescriptionDocument);
     try {
         await newPathDescription.save();
-        req.status(200).json(newPathDescription)
+        res.status(200).json(newPathDescription)
     } catch (err) {
         res.status(404).json({ message: err.message });
     }

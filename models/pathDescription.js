@@ -1,4 +1,6 @@
-import mongoose from 'mongoose'
+
+
+const mongoose =  require('mongoose')
 // for each clooection we make a CRUD
 const pathDescriptionSchema = mongoose.Schema({
 
@@ -10,4 +12,4 @@ const pathDescriptionSchema = mongoose.Schema({
 })
 
 const PathDescription = mongoose.model('PathDescription', pathDescriptionSchema);
-export default PathDescription;
+module.exports = PathDescription;

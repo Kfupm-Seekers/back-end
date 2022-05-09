@@ -1,4 +1,6 @@
-import mongoose from 'mongoose'
+
+
+const mongoose = require('mongoose')
 // for each clooection we make a CRUD
 const profileSchema = mongoose.Schema({
     userId: Number,
@@ -9,4 +11,4 @@ const profileSchema = mongoose.Schema({
 })
 
 const Profile = mongoose.model('Profile', profileSchema);
-export default Profile;
+module.exports = Profile;

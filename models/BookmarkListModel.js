@@ -1,3 +1,5 @@
+
+
 const mongoose = require("mongoose");
 const BookmarkListSchema = new mongoose.Schema({
   user_id: { type: String, required: true },

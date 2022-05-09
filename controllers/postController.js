@@ -1,3 +1,4 @@
+
 const Post = require('../models/post');
 
 const validationHandler = require('../validations/validationHandler');

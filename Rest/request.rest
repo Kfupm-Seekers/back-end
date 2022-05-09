@@ -4,7 +4,7 @@ Authorization: Bearer eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwiaXNzIjoiaHR0cHM6Ly
 
 ###
 
-GET http://localhost:80/course
+GET http://localhost:80/courses
 Content-Type: application/json
 
 
@@ -20,12 +20,21 @@ POST http://localhost:80/api/course
 Content-Type: application/json
 
 {
-    "name": "Machine Learning A-Z™: Hands-On Python & R In Data Science udemy",
-    "description": "Machine Learning A-Z™: Hands-On Python & R In Data Science",
-    "imageurl": "https://img-b.udemycdn.com/course/240x135/950390_270f_3.jpg",
-    "provider": "Udemy",
-    "url": "https://www.udemy.com/course/machinelearning/",
-    "price": 20
-
+    "subtitle": "Model Building and Validation",
+    "title": "Udacity",
+    "image_url": "https://www.simplilearn.com/ice9/free_resources_article_thumb/What_is_Data_Analysis.jpg",
+    "courseSite": "https://www.udacity.com/course/model-building-and-validation--ud919"
 }
 
+### post path description
+
+POST http://localhost:80/PathDescription
+Content-Type: application/json
+
+{
+    "image": "https://img-b.udemycdn.com/course/240x135/950390_270f_3.jpg",
+    "lTitle": "String",
+    "lDescription": "String",
+    "rTitle": "String",
+    "rDescription": "String"
+}

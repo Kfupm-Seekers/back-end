@@ -24,17 +24,19 @@ const passport = require("passport");
 const session = require("express-session");
 const authConfig = require("./auth_config.json");
 
-const jwt = require("express-jwt");
-const jwksRsa = require("jwks-rsa");
 
 require("./utils/passport");
 
 const app = express();
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb+srv://team:l9irUEeUegtujTPj@cluster0.aelov.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true })
+// mongoose.connect('mongodb+srv://team:l9irUEeUegtujTPj@cluster0.aelov.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true })
 
-const allowedOrigins = ["http://localhost:3000", "http://localhost:8080"];
+// mongoose.connect('mongodb+srv://javascript:javascript123@cluster0.gahhe.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true })
+   
+    mongoose.connect('mongodb+srv://seeker:DGjcdNh0FhiNS750@cluster0.rslrn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true })
+
+const allowedOrigins = ["http://localhost:3000", "http://localhost:80"];
 
 app.use(
     cors({
@@ -68,30 +70,6 @@ app.use(passport.session());
 
 app.use("/users", userRouter);
 
-const { auth, requiredScopes } = require('express-oauth2-jwt-bearer');
-require('dotenv').config();
-
-if (!process.env.ISSUER_BASE_URL || !process.env.AUDIENCE) {
-  throw 'Make sure you have ISSUER_BASE_URL, and AUDIENCE in your .env file';
-}
-
-const checkJwt = jwt({
-    secret: jwksRsa.expressJwtSecret({
-      cache: true,
-      rateLimit: true,
-      jwksRequestsPerMinute: 5,
-      jwksUri: `https://${authConfig.domain}/.well-known/jwks.json`,
-    }),
-  
-    audience: authConfig.audience,
-    issuer: `https://${authConfig.domain}/`,
-    algorithms: ["RS256"],
-  });
-
-app.use(function(err, req, res, next){
-  console.error(err.stack);
-  return res.set(err.headers).status(err.status).json({ message: err.message });
-});
 
 // auth end
 
@@ -110,6 +88,7 @@ app.use(errorHandler);
 //======================courses get======================
 app.get(
   "/courses",
+  passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     let favourites = await FavouriteListModel.findOne({ user_id: req.user.id });
     let bookmarks = await BookmarkListModel.findOne({ user_id: req.user.id });
@@ -497,30 +476,11 @@ app.listen(80, () => {
 });
 
 
-// import express from 'express';
-// import bodyParser from 'body-parser';
-// import mongoose from 'mongoose';
-// import cors from 'cors';
-// import pathRoutes from './routes/PathsDes.js';
-// import profileRoutes from './routes/Profile.js';
 
-// const app = express()
-// app.use(express.urlencoded({ extended: true }))
-// app.use(express.json())
-// app.use(cors());
-// // parse application/json
-// app.use(bodyParser.json());
-// app.use('/PathDescription', pathRoutes);
-// app.use(profileRoutes)
+const pathRoutes = require('./routes/PathsDes.js');
+const profileRoutes = require('./routes/Profile.js');
 
+// parse application/json
+app.use('/PathDescription', pathRoutes);
+app.use(profileRoutes)
 
-// // app.listen(5000, () => console.log(`App listening at http://localhost:${5000}`))
-
-// const CONNECTION_URL = 'mongodb+srv://Musab:Musab1234@swe418cluster.rlu7n.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
-// const PORT = process.env.PORT || 5000;
-// mongoose.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-//     .then(() => {
-//         console.log("connected to the MongoDB")
-//         app.listen(PORT, () => console.log(`Server running on port: http://localhost:${PORT}`))
-//     })
-//     .catch((err) => console.log(err.message));

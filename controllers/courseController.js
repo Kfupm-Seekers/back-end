@@ -1,10 +1,11 @@
+
+
 const Course = require('../models/course');
 
 const validationHandler = require('../validations/validationHandler');
 
 exports.index = async(req, res) => {
     try {
-        console.log(req.params.user_id)
         const courses = await Course.find().sort({ createdat: -1 });
         res.send(courses);
     } catch (err) {
@@ -32,12 +33,10 @@ exports.post = async(req, res, next) => {
         // validationHandler(req);
 
         let course = new Course();
-        course.name = req.body.name;
-        course.description = req.body.description;
-        course.imageurl = req.body.imageurl;
-        course.provider = req.body.provider;
-        course.price = req.body.price;
-        course.url = req.body.url;
+       course.title = req.body.title;
+        course.subtitle = req.body.subtitle;
+        course.image_url = req.body.image_url;
+        course.courseSite = req.body.courseSite;
         course = await course.save();
 
         res.send(course);
@@ -52,28 +51,25 @@ exports.update = async(req, res, next) => {
         validationHandler(req);
 
         let course = await Course.findById(req.params.id);
-        if (req.body.name != "") {
+        if (req.body.title != "") {
 
 
-            course.name = req.body.name;
+           course.title = req.body.title;
         }
-        if (req.body.description != "") {
-            course.description = req.body.description;
+        if (req.body.subtitle != "") {
+            course.description = req.body.subtitle;
         }
-        if (req.body.imageurl != "") {
-            course.imageurl = req.body.imageurl;
+        if (req.body.image_url != "") {
+            course.image_url = req.body.image_url;
         }
-        if (req.body.provider != "") {
-            course.provider = req.body.provider;
-        }
-        if (req.body.price != "") {
-            course.price = req.body.price;
+        if (req.body.courseSite != "") {
+            course.courseSite = req.body.courseSite;
         }
 
         course = await course.save();
 
         res.send(course);
-        res.send({ message: 'The name is ' + req.body.name });
+        res.send({ message: 'The name is ' + req.body.title });
     } catch (err) {
         res.status(404).json({ "message": "Error not found" });
     }

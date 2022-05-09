@@ -1,12 +1,12 @@
-import Profile from "../models/profile.js";
-import multer from 'multer';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import { profile } from "console";
+const Profile =  require("../models/profile.js");
+const multer = require('multer');
+const path = require('path');
+const { fileURLToPath } = require('url');
+const { dirname } = require('path');
+const { profile } =  require("console");
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
 
 var data3;
 const storage = multer.diskStorage({
@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 
 
 
-export const getProfiles = async (req, res) => {
+exports.getProfiles = async (req, res) => {
     // small p in pathDescription for the function
     // capital P in the PathDescription for the file
     try {
@@ -32,7 +32,7 @@ export const getProfiles = async (req, res) => {
     }
 }
 
-export const createUserProfile = async (req, res) => {
+exports.createUserProfile = async (req, res) => {
     const userProfileDocument = req.body; //req.body is the content of the form
     const newUserProfile = new PathDescription(userProfileDocument);
     try {
@@ -43,11 +43,11 @@ export const createUserProfile = async (req, res) => {
     }
 }
 
-export const AddUserInfo = (req, res) => {
+exports.AddUserInfo = (req, res) => {
     data3 = req.body;
 }
 
-export const createUserProfileTest = async (req, res) => {
+exports.createUserProfileTest = async (req, res) => {
     let upload = multer({ storage: storage }).single('avatar');
     try {
         upload(req, res, function (err) {
@@ -72,7 +72,7 @@ export const createUserProfileTest = async (req, res) => {
     }
 }
 
-export const getProfile = (req, res) => {
+exports.getProfile = (req, res) => {
     console.log(req.params.id)
     Profile.findById(req.params.id)
     .then(result => {
