@@ -488,7 +488,7 @@ app.put('/postdatatoFlask', passport.authenticate("jwt", { session: false }) , a
         questionID: req.params.id,
         courseID: req.body.courseID, //courseID,
         score: "",
-        sent1: sent1,
+        sent1: req.body.sent1,
         sent2: req.body.sent2,
     
         // score:"" // to be taken from the flask api can obtained by returndata['result']
@@ -504,6 +504,9 @@ app.put('/postdatatoFlask', passport.authenticate("jwt", { session: false }) , a
         sent2: req.body.sent2,
     } 
  
+
+    console.log(data);
+
     var options = { 
         method: 'POST', 
         uri: 'http://127.0.0.1:5000/predict', 
@@ -525,6 +528,9 @@ app.put('/postdatatoFlask', passport.authenticate("jwt", { session: false }) , a
 
 
     if(returndata['result'] == 0){
+        print("data is")
+        
+        console.log(originalData)
 
         BookmarkListModel.updateOne(
             { user_id: req.user.id },
