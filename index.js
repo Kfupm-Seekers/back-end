@@ -10,6 +10,9 @@ const treeRoutes = require('./routes/tree');
 const Course = require("./models/course");
 const Path = require("./models/pathModel");
 
+// var bodyParser = require('body-parser'); 
+var request = require('request-promise'); 
+
 const userRouter = require("./routes/users");
 
 
@@ -54,6 +57,7 @@ app.use(
 );
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false })); 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(
@@ -468,6 +472,90 @@ app.get(
         }
     }
 );
+
+
+
+
+// app.get("/paths/bookmarks", passport.authenticate("jwt", { session: false }), async (req, res) => {
+app.put('/postdatatoFlask', passport.authenticate("jwt", { session: false }) , async (req, res) => { 
+
+    // userID: req.user.id
+    // courseID = findById(req.params.id, 'courseID').exec()
+    // sent1 = findById(req.params.id, 'description').exec()
+
+    var originalData = {
+        userID: req.user.id,
+        questionID: req.params.id,
+        courseID: req.body.courseID, //courseID,
+        score: "",
+        sent1: sent1,
+        sent2: req.body.sent2,
+    
+        // score:"" // to be taken from the flask api can obtained by returndata['result']
+    }
+    
+    // var data = { // this variable contains the data you want to send  
+    //     sent1: originalData['sent1'],
+    //     sent2: originalData['sent2'],
+    // } 
+
+    var data = { // this variable contains the data you want to send  
+        sent1: req.body.sent1,
+        sent2: req.body.sent2,
+    } 
+ 
+    var options = { 
+        method: 'POST', 
+        uri: 'http://127.0.0.1:5000/predict', 
+        body: data, 
+        json: true // Automatically stringifies the body to JSON 
+    }; 
+     
+    var returndata; 
+    var sendrequest = await request(options) 
+    .then(function (parsedBody) { 
+        console.log(parsedBody); // parsedBody contains the data sent back from the Flask server 
+        returndata = parsedBody; // do something with this data, here I'm assigning it to a variable. 
+    }) 
+    .catch(function (err) { 
+        console.log(err); 
+    }); 
+
+    originalData['score'] = returndata['result']
+
+
+    if(returndata['result'] == 0){
+
+        BookmarkListModel.updateOne(
+            { user_id: req.user.id },
+            { $addToSet: { list: req.body.courseID } },
+            (err, results) => {
+              if (err) {
+                return res
+                  .status(500)
+                  .json({ message: "could not set course as bookmark" });
+              }
+              return res
+                .status(200)
+                .json({ message: "course added to bookmark successfully" });
+            }
+          );
+        
+
+    }
+
+
+     
+    res.send(returndata['result']); 
+}); 
+
+
+
+
+
+
+
+
 
 
 
