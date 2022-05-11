@@ -528,7 +528,6 @@ app.put('/postdatatoFlask', passport.authenticate("jwt", { session: false }) , a
 
 
     if(returndata['result'] == 0){
-        print("data is")
         
         console.log(originalData)
 
@@ -538,12 +537,9 @@ app.put('/postdatatoFlask', passport.authenticate("jwt", { session: false }) , a
             (err, results) => {
               if (err) {
                 return res
-                  .status(500)
-                  .json({ message: "could not set course as bookmark" });
+                 
               }
               return res
-                .status(200)
-                .json({ message: "course added to bookmark successfully" });
             }
           );
         
